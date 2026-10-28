@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="es" class="h-full bg-slate-50">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>San Lucas Salud | Plataforma de Reservas y Turnos Médicos</title>
+  
+  <!-- Tailwind CSS CDN Oficial -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <!-- Librería Externa 1: Toastify CSS -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css" />
+  
+  <!-- Estilos Personalizados Complementarios -->
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+<body class="h-full flex flex-col text-slate-800 antialiased selection:bg-sky-500 selection:text-white">
+
+  <!-- ================= NAVBAR ================= -->
+  <header class="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-slate-200">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
+      
+      <!-- Marca y Logotipo -->
+      <div class="flex items-center space-x-3">
+        <div class="w-11 h-11 rounded-2xl bg-gradient-to-tr from-sky-600 to-cyan-500 flex items-center justify-center text-white shadow-md shadow-sky-500/20">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M12 4v16m8-8H4"/></svg>
+        </div>
+        <div>
+          <span class="text-xl font-extrabold tracking-tight text-slate-900 block leading-tight">San Lucas <span class="text-sky-600 font-bold">Salud</span></span>
+          <span class="text-[11px] font-medium text-slate-400 uppercase tracking-widest block">Centro Médico Especializado</span>
+        </div>
+      </div>
+
+      <!-- Acceso Rápido / Información de Contacto -->
+      <div class="flex items-center space-x-4">
+        <div class="hidden md:flex items-center space-x-2 text-xs font-semibold text-slate-600 bg-slate-100 px-3.5 py-1.5 rounded-full border border-slate-200">
+          <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+          <span>Atención Inmediata: 0800-444-LUCAS</span>
+        </div>
+        <a href="#seccionAgenda" class="relative inline-flex items-center space-x-2 px-4 py-2 text-xs font-semibold rounded-xl bg-sky-50 text-sky-700 hover:bg-sky-100 transition-colors border border-sky-200">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>
+          <span>Mis Citas</span>
+          <span id="contadorTurnosBadge" class="hidden">0</span>
+        </a>
+      </div>
+
+    </div>
+  </header>
+
+  <!-- ================= HERO & BUSCADOR ================= -->
+  <section class="bg-gradient-to-b from-sky-50 via-white to-slate-50 border-b border-slate-200 py-12 px-4 sm:px-6 lg:px-8">
+    <div class="max-w-4xl mx-auto text-center">
+      <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-sky-100 text-sky-800 mb-4">
+        🩺 Simulador Interactivo de Agendamiento Profesional
+      </span>
+      <h1 class="text-3xl sm:text-5xl font-black text-slate-900 tracking-tight leading-tight">
+        Reserva tu cita médica con especialistas de excelencia
+      </h1>
+      <p class="mt-3 text-base sm:text-lg text-slate-600 max-w-2xl mx-auto font-normal">
+        Consulta disponibilidades, agrega estudios complementarios y simula la cotización de tus honorarios médicos al instante.
+      </p>
+
+      <!-- Panel de Búsqueda y Filtros -->
+      <div class="mt-8 bg-white p-4 sm:p-5 rounded-2xl shadow-lg shadow-slate-200/60 border border-slate-200 grid grid-cols-1 md:grid-cols-12 gap-3 text-left">
+        
+        <!-- Búsqueda por Nombre o Palabra Clave -->
+        <div class="md:col-span-7">
+          <label for="inputBuscar" class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1.5">Buscar profesional o término</label>
+          <div class="relative">
+            <input 
+              type="text" 
+              id="inputBuscar" 
+              placeholder="Ej. Rostova, ecocardiograma, rodilla..." 
+              class="w-full pl-10 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-sky-500 focus:bg-white transition-all text-slate-800 placeholder-slate-400 font-medium"
+            />
+            <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+            </div>
+          </div>
+        </div>
+
+        <!-- Filtro por Especialidad Médica -->
+        <div class="md:col-span-5">
+          <label for="selectEspecialidad" class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1.5">Especialidad</label>
+          <div class="relative">
+            <select 
+              id="selectEspecialidad" 
+              class="w-full px-3 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-sky-500 focus:bg-white transition-all text-slate-800 font-medium appearance-none cursor-pointer"
+            >
+              <option value="todas">Todas las especialidades</option>
+            </select>
+            <div class="absolute inset-y-0 right-0 pr-3.5 flex items-center pointer-events-none text-slate-400">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= CONTENEDOR PRINCIPAL ================= -->
+  <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 flex-1 grid grid-cols-1 lg:grid-cols-12 gap-8">
+    
+    <!-- COLUMNA IZQUIERDA: Directorio Médico (8 cols) -->
+    <div class="lg:col-span-8">
+      
+      <div class="flex items-center justify-between mb-6">
+        <div>
+          <h2 class="text-xl font-bold text-slate-900 tracking-tight">Directorio Médico Disponible</h2>
+          <p class="text-xs text-slate-500">Selecciona el profesional y reserva tu turno presencial</p>
+        </div>
+        <span id="badgeContadorResultados" class="text-xs font-semibold px-2.5 py-1 rounded-full bg-slate-200 text-slate-700">
+          Cargando...
+        </span>
+      </div>
+
+      <!-- Spinner Loader Asíncrono -->
+      <div id="loaderEstado" class="flex items-center justify-center py-16">
+        <div class="flex items-center space-x-3 text-sky-600 font-semibold text-sm">
+          <svg class="animate-spin h-6 w-6 text-sky-600" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"></path></svg>
+          <span>Sincronizando especialistas con base de datos JSON...</span>
+        </div>
+      </div>
+
+      <!-- Grid de Especialistas -->
+      <div id="gridEspecialistas" class="grid grid-cols-1 md:grid-cols-2 gap-5">
+        <!-- Renderizado dinámico desde app.js -->
+      </div>
+
+    </div>
+
+    <!-- COLUMNA DERECHA: Agenda & Persistencia LocalStorage (4 cols) -->
+    <div class="lg:col-span-4" id="seccionAgenda">
+      <div class="sticky top-28 bg-white rounded-2xl border border-slate-200 p-5 shadow-sm">
+        
+        <div class="flex items-center justify-between pb-4 border-b border-slate-100 mb-4">
+          <div class="flex items-center space-x-2">
+            <div class="w-8 h-8 rounded-lg bg-sky-100 text-sky-700 flex items-center justify-center font-bold text-sm">
+              📋
+            </div>
+            <div>
+              <h3 class="text-base font-bold text-slate-900">Mis Citas Agendadas</h3>
+              <p class="text-[11px] text-slate-400">Persistencia local con Storage</p>
+            </div>
+          </div>
+          <button 
+            type="button" 
+            id="btnVaciarAgenda" 
+            title="Vaciar todas las reservas guardadas" 
+            class="text-xs font-semibold text-red-600 hover:text-red-700 hover:bg-red-50 px-2 py-1 rounded-lg transition-colors"
+          >
+            Vaciar todo
+          </button>
+        </div>
+
+        <!-- Lista de Citas en Storage -->
+        <div id="contenedorListaTurnos" class="space-y-3 max-h-[520px] overflow-y-auto pr-1">
+          <!-- Renderizado dinámico desde ui.js -->
+        </div>
+
+        <!-- Respaldo informativo de la simulación -->
+        <div class="mt-5 p-3 rounded-xl bg-slate-50 border border-slate-200 text-slate-500 text-[11px] leading-relaxed">
+          💡 <strong class="text-slate-700">Simulación interactiva:</strong> Los turnos agendados se almacenan permanentemente en tu navegador. Puedes cancelar citas individualmente o vaciar la agenda completa.
+        </div>
+
+      </div>
+    </div>
+
+  </main>
+
+  <!-- ================= MODAL DE PROCESO DE RESERVA (DRAWER/POPUP) ================= -->
+  <div id="modalReserva" class="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm hidden items-center justify-center p-4 overflow-y-auto">
+    <div class="bg-white rounded-3xl max-w-2xl w-full p-6 sm:p-8 shadow-2xl border border-slate-100 my-8 animate-fade-scale relative">
+      
+      <!-- Botón de Cerrar Modal -->
+      <button 
+        type="button" 
+        id="btnCerrarModal" 
+        class="absolute top-5 right-5 text-slate-400 hover:text-slate-600 hover:bg-slate-100 p-2 rounded-full transition-colors"
+      >
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+      </button>
+
+      <!-- Encabezado de la Reserva -->
+      <div class="flex items-center space-x-4 pb-5 border-b border-slate-100 mb-6">
+        <img id="modalDocAvatar" src="" alt="Avatar médico" class="w-16 h-16 rounded-2xl object-cover border-2 border-sky-100" />
+        <div>
+          <span class="text-xs font-bold text-sky-700 uppercase tracking-wider" id="modalDocEspecialidad">Especialidad</span>
+          <h3 class="text-xl font-bold text-slate-900 leading-tight" id="modalDocNombre">Nombre del Médico</h3>
+          <p class="text-xs text-slate-500">Honorarios base: <strong class="text-slate-800" id="modalDocTarifa">$0</strong></p>
+        </div>
+      </div>
+
+      <!-- Formulario de Agendamiento y Servicios Complementarios -->
+      <form id="formReserva" class="space-y-6">
+        
+        <!-- Bloque 1: Fecha y Turno Horario -->
+        <div>
+          <h4 class="text-xs font-bold text-slate-600 uppercase tracking-wider mb-3">1. Fecha y Horario</h4>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <div>
+              <label for="inputFecha" class="block text-xs font-semibold text-slate-500 mb-1">Fecha de la cita</label>
+              <input 
+                type="date" 
+                id="inputFecha" 
+                required 
+                class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-sm font-medium focus:ring-2 focus:ring-sky-500 focus:outline-none" 
+              />
+            </div>
+            <div>
+              <label for="selectHorarios" class="block text-xs font-semibold text-slate-500 mb-1">Horario disponible</label>
+              <select 
+                id="selectHorarios" 
+                required 
+                class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-sm font-medium focus:ring-2 focus:ring-sky-500 focus:outline-none cursor-pointer"
+              >
+                <!-- Opciones dinámicas -->
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <!-- Bloque 2: Servicios Complementarios y Exámenes -->
+        <div>
+          <div class="flex justify-between items-center mb-2">
+            <h4 class="text-xs font-bold text-slate-600 uppercase tracking-wider">2. Exámenes y Servicios Adicionales (Opcional)</h4>
+            <span class="text-[11px] text-sky-600 font-medium">Cotizador dinámico</span>
+          </div>
+          <div id="contenedorServiciosExtra" class="space-y-2 max-h-40 overflow-y-auto pr-1">
+            <!-- Checkboxes generados dinámicamente -->
+          </div>
+        </div>
+
+        <!-- Bloque 3: Datos del Paciente -->
+        <div>
+          <h4 class="text-xs font-bold text-slate-600 uppercase tracking-wider mb-3">3. Datos del Paciente</h4>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <div>
+              <label for="inputNombre" class="block text-xs font-semibold text-slate-500 mb-1">Nombre Completo</label>
+              <input 
+                type="text" 
+                id="inputNombre" 
+                required 
+                placeholder="Ej. Juan Pérez" 
+                class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-sm font-medium focus:ring-2 focus:ring-sky-500 focus:outline-none" 
+              />
+            </div>
+            <div>
+              <label for="inputDni" class="block text-xs font-semibold text-slate-500 mb-1">DNI / Documento</label>
+              <input 
+                type="text" 
+                id="inputDni" 
+                required 
+                placeholder="Ej. 38123456" 
+                class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-sm font-medium focus:ring-2 focus:ring-sky-500 focus:outline-none" 
+              />
+            </div>
+            <div>
+              <label for="inputEmail" class="block text-xs font-semibold text-slate-500 mb-1">Correo Electrónico</label>
+              <input 
+                type="email" 
+                id="inputEmail" 
+                required 
+                placeholder="juan@correo.com" 
+                class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-sm font-medium focus:ring-2 focus:ring-sky-500 focus:outline-none" 
+              />
+            </div>
+            <div>
+              <label for="inputTelefono" class="block text-xs font-semibold text-slate-500 mb-1">Teléfono Móvil</label>
+              <input 
+                type="tel" 
+                id="inputTelefono" 
+                required 
+                placeholder="Ej. 11 9876-5432" 
+                class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-sm font-medium focus:ring-2 focus:ring-sky-500 focus:outline-none" 
+              />
+            </div>
+          </div>
+        </div>
+
+        <!-- Bloque 4: Desglose de Liquidación y Cotización -->
+        <div class="bg-slate-50 p-4 rounded-2xl border border-slate-200">
+          <div class="flex justify-between items-center text-xs text-slate-600 mb-1">
+            <span>Consulta Base:</span>
+            <span id="resumenSubtotal" class="font-bold text-slate-800">$0</span>
+          </div>
+          <div class="flex justify-between items-center text-xs text-slate-600 mb-2">
+            <span>Servicios & Exámenes adicionales:</span>
+            <span id="resumenExtras" class="font-bold text-sky-700">+$0</span>
+          </div>
+          <div class="pt-2 border-t border-slate-200 flex justify-between items-center text-base font-extrabold text-slate-900">
+            <span>Presupuesto Total Estimado:</span>
+            <span id="resumenTotal" class="text-xl text-sky-700 font-black">$0</span>
+          </div>
+        </div>
+
+        <!-- Botones de Acción -->
+        <div class="flex items-center justify-end space-x-3 pt-2">
+          <button 
+            type="button" 
+            onclick="DOM.btnCerrarModal.click()" 
+            class="px-5 py-2.5 rounded-xl text-sm font-semibold text-slate-600 hover:bg-slate-100 transition-colors"
+          >
+            Cancelar
+          </button>
+          <button 
+            type="submit" 
+            class="px-6 py-2.5 rounded-xl text-sm font-bold bg-sky-600 hover:bg-sky-700 active:bg-sky-800 text-white shadow-md shadow-sky-600/25 transition-all flex items-center space-x-2"
+          >
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+            <span>Confirmar y Agendar Turno</span>
+          </button>
+        </div>
+
+      </form>
+    </div>
+  </div>
+
+  <!-- ================= FOOTER ================= -->
+  <footer class="bg-white border-t border-slate-200 py-6 mt-auto">
+    <div class="max-w-7xl mx-auto px-4 text-center text-xs text-slate-500">
+      <p>© 2026 San Lucas Salud • Simulador Interactivo de Proceso Comercial y Reserva de Citas.</p>
+      <p class="mt-1 text-slate-400">Desarrollado con JavaScript ES6+, Asincronismo, LocalStorage y Tailwind CSS.</p>
+    </div>
+  </footer>
+
+  <!-- ================= LIBRERÍAS EXTERNAS JS ================= -->
+  <!-- SweetAlert2 (Para diálogos modales, confirmaciones y comprobante final) -->
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  
+  <!-- Toastify JS (Para avisos flotantes rápidos no invasivos) -->
+  <script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+
+  <!-- ================= SCRIPTS DE LA APLICACIÓN (EXACTAMENTE 3 ARCHIVOS) ================= -->
+  <!-- 1. Módulo de Almacenamiento Local (Persistencia) -->
+  <script src="js/storage.js"></script>
+  <!-- 2. Módulo de Renderizado e Interfaz de Usuario -->
+  <script src="js/ui.js"></script>
+  <!-- 3. Módulo Orquestador de Lógica de Negocio y Eventos -->
+  <script src="js/app.js"></script>
+
+</body>
+</html>
