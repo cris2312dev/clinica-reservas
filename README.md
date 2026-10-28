@@ -1,4 +1,4 @@
-# 🏥 San Lucas Salud - Simulador de Reservas y Turnos Médicos
+# 🏥 Bocangel Salud - Simulador de Reservas y Turnos Médicos
 
 Aplicación web interactiva desarrollada para la **Entrega Final de JavaScript**. Simula de punta a punta el circuito comercial y operativo de un centro médico especializado: búsqueda y filtrado de profesionales, selección de fechas/horarios, cotización en tiempo real de estudios y servicios complementarios, confirmación con validación y comprobante digital, y persistencia local de turnos agendados.
 

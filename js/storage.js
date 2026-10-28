@@ -1,4 +1,4 @@
-const STORAGE_KEY = 'clinica_san_lucas_turnos';
+const STORAGE_KEY = 'bocangel_salud_turnos';
 
 const StorageManager = {
   obtenerTurnos() {

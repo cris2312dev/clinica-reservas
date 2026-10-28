@@ -242,7 +242,7 @@ async function procesarReserva(evento) {
   const sumaExtras = extrasSeleccionados.reduce((acc, curr) => acc + curr.precio, 0);
   const total = especialistaSeleccionado.tarifaBase + sumaExtras;
 
-  const codigoReserva = `CSL-${Math.floor(100000 + Math.random() * 900000)}`;
+  const codigoReserva = `BOC-${Math.floor(100000 + Math.random() * 900000)}`;
 
   const nuevaCita = {
     id: Date.now().toString(),
