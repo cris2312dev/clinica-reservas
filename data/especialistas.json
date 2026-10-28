@@ -4,15 +4,16 @@
     "nombre": "Dra. Elena Rostova",
     "especialidad": "Cardiología",
     "experiencia": "14 años",
-    "tarifaBase": 45000,
+    "tarifaBase": 180,
     "calificacion": 4.9,
-    "imagen": "https://images.unsplash.com/photo-1559839734-2b71ea197ec2?auto=format&fit=crop&w=300&q=80",
+    "iniciales": "ER",
+    "colorBadge": "bg-sky-100 text-sky-700",
     "diasDisponibles": ["Lunes", "Miércoles", "Viernes"],
     "horarios": ["09:00", "11:30", "15:00", "17:30"],
     "serviciosExtra": [
-      { "id": "cardio-eco", "nombre": "Ecocardiograma Doppler", "precio": 22000 },
-      { "id": "cardio-ecg", "nombre": "Electrocardiograma (ECG)", "precio": 12000 },
-      { "id": "cardio-inf", "nombre": "Informe Médico Prioritario (24h)", "precio": 8000 }
+      { "id": "cardio-eco", "nombre": "Ecocardiograma Doppler", "precio": 120 },
+      { "id": "cardio-ecg", "nombre": "Electrocardiograma (ECG)", "precio": 60 },
+      { "id": "cardio-inf", "nombre": "Informe Médico Prioritario (24h)", "precio": 40 }
     ]
   },
   {
@@ -20,31 +21,33 @@
     "nombre": "Dr. Mateo Valenzuela",
     "especialidad": "Traumatología y Ortopedia",
     "experiencia": "10 años",
-    "tarifaBase": 40000,
+    "tarifaBase": 160,
     "calificacion": 4.8,
-    "imagen": "https://images.unsplash.com/photo-1622253692010-333f2da6031d?auto=format&fit=crop&w=300&q=80",
+    "iniciales": "MV",
+    "colorBadge": "bg-indigo-100 text-indigo-700",
     "diasDisponibles": ["Martes", "Jueves", "Sábado"],
     "horarios": ["08:30", "10:30", "14:00", "16:30"],
     "serviciosExtra": [
-      { "id": "trauma-rx", "nombre": "Radiografía Digital Focal", "precio": 16000 },
-      { "id": "trauma-inf", "nombre": "Infiltración Articular Local", "precio": 25000 },
-      { "id": "trauma-vend", "nombre": "Inmovilización y Vendaje Rígido", "precio": 9000 }
+      { "id": "trauma-rx", "nombre": "Radiografía Digital Focal", "precio": 80 },
+      { "id": "trauma-inf", "nombre": "Infiltración Articular Local", "precio": 130 },
+      { "id": "trauma-vend", "nombre": "Inmovilización y Vendaje Rígido", "precio": 50 }
     ]
   },
   {
     "id": 103,
     "nombre": "Dra. Sofía Mendoza",
-    "especialidad": "Dermatología Clínica y Estética",
+    "especialidad": "Dermatología Clínica",
     "experiencia": "12 años",
-    "tarifaBase": 38000,
+    "tarifaBase": 150,
     "calificacion": 4.9,
-    "imagen": "https://images.unsplash.com/photo-1594824813589-d419c83ce932?auto=format&fit=crop&w=300&q=80",
+    "iniciales": "SM",
+    "colorBadge": "bg-rose-100 text-rose-700",
     "diasDisponibles": ["Lunes", "Martes", "Jueves"],
     "horarios": ["10:00", "12:00", "16:00", "18:00"],
     "serviciosExtra": [
-      { "id": "derma-dermato", "nombre": "Dermatoscopía Digital de Lunares", "precio": 15000 },
-      { "id": "derma-biop", "nombre": "Biopsia de Piel con Estudio Patológico", "precio": 28000 },
-      { "id": "derma-peel", "nombre": "Peeling Químico Dermatológico", "precio": 20000 }
+      { "id": "derma-dermato", "nombre": "Dermatoscopía Digital de Lunares", "precio": 75 },
+      { "id": "derma-biop", "nombre": "Biopsia de Piel con Estudio Patológico", "precio": 140 },
+      { "id": "derma-peel", "nombre": "Peeling Químico Dermatológico", "precio": 110 }
     ]
   },
   {
@@ -52,15 +55,16 @@
     "nombre": "Dr. Carlos Benítez",
     "especialidad": "Neurología Adultos",
     "experiencia": "18 años",
-    "tarifaBase": 50000,
+    "tarifaBase": 200,
     "calificacion": 5.0,
-    "imagen": "https://images.unsplash.com/photo-1537368910025-700350fe46c7?auto=format&fit=crop&w=300&q=80",
+    "iniciales": "CB",
+    "colorBadge": "bg-emerald-100 text-emerald-700",
     "diasDisponibles": ["Miércoles", "Jueves", "Viernes"],
     "horarios": ["09:30", "11:00", "14:30", "16:00"],
     "serviciosExtra": [
-      { "id": "neuro-eeg", "nombre": "Electroencefalograma Computarizado", "precio": 26000 },
-      { "id": "neuro-cog", "nombre": "Batería de Evaluación Neurocognitiva", "precio": 32000 },
-      { "id": "neuro-inf", "nombre": "Certificado Neurológico Legal/Laboral", "precio": 14000 }
+      { "id": "neuro-eeg", "nombre": "Electroencefalograma Computarizado", "precio": 150 },
+      { "id": "neuro-cog", "nombre": "Batería de Evaluación Neurocognitiva", "precio": 180 },
+      { "id": "neuro-inf", "nombre": "Certificado Neurológico Legal/Laboral", "precio": 70 }
     ]
   },
   {
@@ -68,15 +72,16 @@
     "nombre": "Dra. Camila Morales",
     "especialidad": "Pediatría y Neonatología",
     "experiencia": "9 años",
-    "tarifaBase": 35000,
+    "tarifaBase": 140,
     "calificacion": 4.9,
-    "imagen": "https://images.unsplash.com/photo-1551836022-d5d88e9218df?auto=format&fit=crop&w=300&q=80",
+    "iniciales": "CM",
+    "colorBadge": "bg-amber-100 text-amber-700",
     "diasDisponibles": ["Lunes", "Martes", "Miércoles", "Viernes"],
     "horarios": ["08:00", "10:00", "13:00", "15:30"],
     "serviciosExtra": [
-      { "id": "pedia-vac", "nombre": "Control de Vacunación e Inmunización", "precio": 11000 },
-      { "id": "pedia-nutri", "nombre": "Evaluación Nutricional Pediátrica", "precio": 13000 },
-      { "id": "pedia-urg", "nombre": "Prioridad en Guardia / Seguimiento 48h", "precio": 9000 }
+      { "id": "pedia-vac", "nombre": "Control de Vacunación e Inmunización", "precio": 55 },
+      { "id": "pedia-nutri", "nombre": "Evaluación Nutricional Pediátrica", "precio": 65 },
+      { "id": "pedia-urg", "nombre": "Prioridad en Guardia / Seguimiento 48h", "precio": 45 }
     ]
   },
   {
@@ -84,15 +89,16 @@
     "nombre": "Dr. Andrés Gómez",
     "especialidad": "Oftalmología",
     "experiencia": "11 años",
-    "tarifaBase": 39000,
+    "tarifaBase": 160,
     "calificacion": 4.7,
-    "imagen": "https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?auto=format&fit=crop&w=300&q=80",
+    "iniciales": "AG",
+    "colorBadge": "bg-purple-100 text-purple-700",
     "diasDisponibles": ["Martes", "Miércoles", "Sábado"],
     "horarios": ["09:00", "11:00", "14:00", "17:00"],
     "serviciosExtra": [
-      { "id": "oftal-fondo", "nombre": "Fondo de Ojo con Dilatación Pupilar", "precio": 14000 },
-      { "id": "oftal-tono", "nombre": "Tonometría Ocular (Presión Intraocular)", "precio": 10000 },
-      { "id": "oftal-receta", "nombre": "Graduación y Prescripción de Lentes", "precio": 8000 }
+      { "id": "oftal-fondo", "nombre": "Fondo de Ojo con Dilatación Pupilar", "precio": 70 },
+      { "id": "oftal-tono", "nombre": "Tonometría Ocular (Presión Intraocular)", "precio": 50 },
+      { "id": "oftal-receta", "nombre": "Graduación y Prescripción de Lentes", "precio": 40 }
     ]
   }
 ]

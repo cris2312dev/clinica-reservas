@@ -1,14 +1,5 @@
-/**
- * UI.JS
- * Módulo encargado de la manipulación dinámica del DOM, renderizado de componentes
- * y la integración visual de librerías externas (SweetAlert2 y Toastify).
- * Sin prompt, alert ni confirm nativos.
- */
-
 const UIManager = {
-  // Notificaciones no invasivas con Toastify JS
   mostrarNotificacion(mensaje, tipo = 'exito') {
-    // Operador ternario para seleccionar gradiente según severidad
     const fondo =
       tipo === 'exito'
         ? 'linear-gradient(to right, #0284c7, #0ea5e9)'
@@ -33,7 +24,6 @@ const UIManager = {
     }).showToast();
   },
 
-  // Cuadros de diálogo y confirmaciones con SweetAlert2
   async confirmarAccion(titulo, texto, confirmText = 'Sí, continuar', cancelText = 'Cancelar') {
     const resultado = await Swal.fire({
       title: titulo,
@@ -55,11 +45,10 @@ const UIManager = {
     return resultado.isConfirmed;
   },
 
-  // Modal final de reserva confirmada
   mostrarComprobanteFinal(resumenReserva) {
     const { codigo, paciente, especialista, especialidad, fecha, horario, total, serviciosExtra } = resumenReserva;
     const listaExtras = serviciosExtra.length > 0
-      ? serviciosExtra.map((s) => `<li class="flex justify-between py-1 text-xs text-slate-600"><span>• ${s.nombre}</span><span class="font-semibold">$${s.precio.toLocaleString('es-AR')}</span></li>`).join('')
+      ? serviciosExtra.map((s) => `<li class="flex justify-between py-1 text-xs text-slate-600"><span>• ${s.nombre}</span><span class="font-semibold">S/ ${s.precio.toFixed(2)}</span></li>`).join('')
       : '<li class="text-xs text-slate-400 italic">Sin estudios ni servicios adicionales.</li>';
 
     Swal.fire({
@@ -83,12 +72,12 @@ const UIManager = {
             </ul>
             <div class="flex justify-between items-center pt-2 border-t border-slate-300 text-base font-extrabold text-slate-900">
               <span>Total Abonado:</span>
-              <span class="text-sky-700 font-bold">$${total.toLocaleString('es-AR')}</span>
+              <span class="text-sky-700 font-bold">S/ ${total.toFixed(2)}</span>
             </div>
           </div>
         </div>
       `,
-      confirmButtonText: 'Descargar / Entendido',
+      confirmButtonText: 'Entendido',
       confirmButtonColor: '#0284c7',
       customClass: {
         popup: 'rounded-2xl max-w-lg',
@@ -97,11 +86,9 @@ const UIManager = {
     });
   },
 
-  // Renderizado dinámico de tarjetas de especialistas en el catálogo
   renderizarEspecialistas(contenedor, listaEspecialistas, onAbrirReserva) {
     contenedor.innerHTML = '';
 
-    // Uso de operador ternario para catálogo vacío
     if (!listaEspecialistas || listaEspecialistas.length === 0) {
       contenedor.innerHTML = `
         <div class="col-span-full text-center py-12 bg-white rounded-2xl border border-slate-200">
@@ -113,10 +100,8 @@ const UIManager = {
       return;
     }
 
-    // Función de orden superior forEach para iterar y renderizar
     listaEspecialistas.forEach((medico) => {
-      // Destructuring de propiedades del médico
-      const { id, nombre, especialidad, experiencia, tarifaBase, calificacion, imagen, diasDisponibles } = medico;
+      const { id, nombre, especialidad, experiencia, tarifaBase, calificacion, iniciales, colorBadge, diasDisponibles } = medico;
 
       const card = document.createElement('div');
       card.className = 'bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-sm hover:shadow-md card-transition flex flex-col justify-between';
@@ -128,7 +113,9 @@ const UIManager = {
       card.innerHTML = `
         <div class="p-5">
           <div class="flex items-center space-x-4 mb-4">
-            <img src="${imagen}" alt="${nombre}" class="w-16 h-16 rounded-full object-cover border-2 border-sky-100 shadow-sm" loading="lazy" />
+            <div class="w-16 h-16 rounded-2xl ${colorBadge} flex items-center justify-center font-extrabold text-xl border border-slate-200/80 shadow-inner flex-shrink-0">
+              ${iniciales}
+            </div>
             <div>
               <span class="inline-block bg-sky-50 text-sky-700 text-xs px-2.5 py-0.5 rounded-full font-semibold uppercase tracking-wider mb-1">
                 ${especialidad}
@@ -142,11 +129,11 @@ const UIManager = {
             <div class="flex items-center space-x-1 text-amber-500">
               <span>⭐</span>
               <span class="font-bold text-slate-700">${calificacion}</span>
-              <span class="text-slate-400 text-[11px]">(Opiniones certificadas)</span>
+              <span class="text-slate-400 text-[11px]">(Opiniones)</span>
             </div>
             <div class="text-right">
-              <span class="text-[10px] text-slate-400 block uppercase">Honorarios Consulta</span>
-              <span class="text-base font-extrabold text-slate-900">$${tarifaBase.toLocaleString('es-AR')}</span>
+              <span class="text-[10px] text-slate-400 block uppercase">Consulta Base</span>
+              <span class="text-base font-extrabold text-slate-900">S/ ${tarifaBase.toFixed(2)}</span>
             </div>
           </div>
 
@@ -177,7 +164,6 @@ const UIManager = {
     });
   },
 
-  // Renderizado de las citas agendadas en la bandeja lateral (Storage View)
   renderizarTurnosAgendados(contenedor, listaTurnos, onCancelarTurno) {
     contenedor.innerHTML = '';
 
@@ -234,7 +220,7 @@ const UIManager = {
           </div>
           <div class="flex justify-between items-center pt-1 font-bold">
             <span class="text-slate-600">Total liquidado:</span>
-            <span class="text-sm text-slate-900">$${total.toLocaleString('es-AR')}</span>
+            <span class="text-sm text-slate-900">S/ ${total.toFixed(2)}</span>
           </div>
         </div>
       `;

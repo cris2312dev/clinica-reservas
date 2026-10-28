@@ -1,15 +1,3 @@
-/**
- * APP.JS
- * Orquestador principal de la aplicación.
- * Responsabilidades:
- * - Carga asíncrona de datos vía fetch() desde data/especialistas.json con async/await y try/catch/finally.
- * - Búsqueda y filtrado dinámico utilizando funciones de orden superior (filter, find).
- * - Cotización y cálculo de totales en tiempo real utilizando la función de orden superior reduce().
- * - Coordinación de eventos del DOM y persistencia en StorageManager.
- * - Sin uso de alert/prompt/confirm nativos.
- */
-
-// Estado global de la aplicación en memoria de ejecución
 const AppState = {
   especialistas: [],
   especialistaSeleccionado: null,
@@ -19,20 +7,17 @@ const AppState = {
   cargando: false,
 };
 
-// Elementos de la interfaz (DOM)
 const DOM = {
-  // Catálogo y filtros
   gridEspecialistas: document.getElementById('gridEspecialistas'),
   selectEspecialidad: document.getElementById('selectEspecialidad'),
   inputBuscar: document.getElementById('inputBuscar'),
   badgeContadorResultados: document.getElementById('badgeContadorResultados'),
   loaderEstado: document.getElementById('loaderEstado'),
 
-  // Modal / Drawer de Reserva
   modalReserva: document.getElementById('modalReserva'),
   btnCerrarModal: document.getElementById('btnCerrarModal'),
   formReserva: document.getElementById('formReserva'),
-  modalDocAvatar: document.getElementById('modalDocAvatar'),
+  modalDocAvatarBadge: document.getElementById('modalDocAvatarBadge'),
   modalDocNombre: document.getElementById('modalDocNombre'),
   modalDocEspecialidad: document.getElementById('modalDocEspecialidad'),
   modalDocTarifa: document.getElementById('modalDocTarifa'),
@@ -40,21 +25,15 @@ const DOM = {
   contenedorServiciosExtra: document.getElementById('contenedorServiciosExtra'),
   inputFecha: document.getElementById('inputFecha'),
 
-  // Desglose de cotización
   resumenSubtotal: document.getElementById('resumenSubtotal'),
   resumenExtras: document.getElementById('resumenExtras'),
   resumenTotal: document.getElementById('resumenTotal'),
 
-  // Bandeja de Turnos Confirmados (Persistencia)
   contenedorListaTurnos: document.getElementById('contenedorListaTurnos'),
   contadorTurnosBadge: document.getElementById('contadorTurnosBadge'),
   btnVaciarAgenda: document.getElementById('btnVaciarAgenda'),
 };
 
-/**
- * 1. CONSUMO ASÍNCRONO DE DATOS LOCALES
- * Cumple con: fetch con async/await, bloque try/catch/finally y manejo de errores visible.
- */
 async function cargarEspecialistas() {
   AppState.cargando = true;
   mostrarLoader(true);
@@ -62,30 +41,22 @@ async function cargarEspecialistas() {
   try {
     const respuesta = await fetch('data/especialistas.json');
 
-    // Validación de respuesta HTTP
     if (!respuesta.ok) {
-      throw new Error(`Error en servidor o archivo no encontrado: ${respuesta.status}`);
+      throw new Error(`Error HTTP: ${respuesta.status}`);
     }
 
     const datos = await respuesta.json();
     AppState.especialistas = datos;
 
-    // Llenar dinámicamente las opciones del select de especialidades
     poblarFiltroEspecialidades(datos);
-
-    // Renderizar catálogo inicial
     aplicarFiltrosYRenderizar();
-    UIManager.mostrarNotificacion('Directorio médico sincronizado con éxito.', 'exito');
-  } catch (error) {
-    console.error('Fallo al cargar base de datos:', error);
-    UIManager.mostrarNotificacion(
-      'No se pudo conectar con el catálogo de especialistas. Intente más tarde.',
-      'error'
-    );
+    UIManager.mostrarNotificacion('Directorio médico sincronizado.', 'exito');
+  } catch {
+    UIManager.mostrarNotificacion('No se pudo conectar con el catálogo de especialistas.', 'error');
     DOM.gridEspecialistas.innerHTML = `
       <div class="col-span-full bg-red-50 border border-red-200 text-red-800 p-6 rounded-2xl text-center">
         <h4 class="font-bold text-base mb-1">Error de sincronización médica</h4>
-        <p class="text-sm">No fue posible cargar el archivo <code>data/especialistas.json</code>. Verifique su entorno local o servidor.</p>
+        <p class="text-sm">No fue posible cargar el catálogo de especialistas.</p>
       </div>
     `;
   } finally {
@@ -94,21 +65,13 @@ async function cargarEspecialistas() {
   }
 }
 
-/**
- * Control del estado de carga visual
- */
 function mostrarLoader(estaCargando) {
-  // Operador ternario para alternar visibilidad
   DOM.loaderEstado.className = estaCargando
     ? 'flex items-center justify-center py-16'
     : 'hidden';
 }
 
-/**
- * Llena el selector de especialidades únicas a partir del JSON
- */
 function poblarFiltroEspecialidades(especialistas) {
-  // Uso de map y Set para obtener categorías sin duplicados
   const especialidadesUnicas = [
     ...new Set(especialistas.map((item) => item.especialidad)),
   ];
@@ -121,10 +84,6 @@ function poblarFiltroEspecialidades(especialistas) {
   });
 }
 
-/**
- * 2. FUNCIONES DE ORDEN SUPERIOR PARA FILTRADO Y BÚSQUEDA
- * Uso de filter() para discriminación por categoría y búsqueda textual.
- */
 function aplicarFiltrosYRenderizar() {
   const { especialistas, filtroEspecialidad, terminoBusqueda } = AppState;
 
@@ -139,7 +98,6 @@ function aplicarFiltrosYRenderizar() {
     return coincideEspecialidad && coincideTexto;
   });
 
-  // Operador ternario para actualizar el badge de conteo
   DOM.badgeContadorResultados.textContent = `${especialistasFiltrados.length} disponible${
     especialistasFiltrados.length === 1 ? '' : 's'
   }`;
@@ -151,12 +109,7 @@ function aplicarFiltrosYRenderizar() {
   );
 }
 
-/**
- * 3. APERTURA DEL PROCESO DE RESERVA Y CONFIGURACIÓN DEL TURNO
- * Uso de find() para localizar al profesional.
- */
 function abrirModalReserva(especialistaId) {
-  // Función de orden superior find()
   const especialista = AppState.especialistas.find((m) => m.id === especialistaId);
 
   if (!especialista) {
@@ -167,22 +120,21 @@ function abrirModalReserva(especialistaId) {
   AppState.especialistaSeleccionado = especialista;
   AppState.extrasSeleccionados = [];
 
-  // Destructuring de datos del especialista seleccionado
-  const { nombre, especialidad, tarifaBase, imagen, horarios, serviciosExtra } = especialista;
+  const { nombre, especialidad, tarifaBase, iniciales, colorBadge, horarios, serviciosExtra } = especialista;
 
-  DOM.modalDocAvatar.src = imagen;
+  DOM.modalDocAvatarBadge.className = `w-16 h-16 rounded-2xl ${colorBadge} flex items-center justify-center font-extrabold text-xl border border-slate-200/80 shadow-inner flex-shrink-0`;
+  DOM.modalDocAvatarBadge.textContent = iniciales;
+
   DOM.modalDocNombre.textContent = nombre;
   DOM.modalDocEspecialidad.textContent = especialidad;
-  DOM.modalDocTarifa.textContent = `$${tarifaBase.toLocaleString('es-AR')}`;
+  DOM.modalDocTarifa.textContent = `S/ ${tarifaBase.toFixed(2)}`;
 
-  // Configurar campo fecha mínima (a partir de mañana)
   const hoy = new Date();
   hoy.setDate(hoy.getDate() + 1);
   const fechaMinima = hoy.toISOString().split('T')[0];
   DOM.inputFecha.min = fechaMinima;
   DOM.inputFecha.value = fechaMinima;
 
-  // Llenar horarios disponibles
   DOM.selectHorarios.innerHTML = '';
   horarios.forEach((hora) => {
     const opt = document.createElement('option');
@@ -191,7 +143,6 @@ function abrirModalReserva(especialistaId) {
     DOM.selectHorarios.appendChild(opt);
   });
 
-  // Renderizar checkboxes de servicios extra y exámenes
   DOM.contenedorServiciosExtra.innerHTML = '';
   serviciosExtra.forEach((extra) => {
     const label = document.createElement('label');
@@ -207,7 +158,7 @@ function abrirModalReserva(especialistaId) {
         />
         <span class="text-xs font-semibold text-slate-700">${extra.nombre}</span>
       </div>
-      <span class="text-xs font-bold text-sky-700">+$${extra.precio.toLocaleString('es-AR')}</span>
+      <span class="text-xs font-bold text-sky-700">+S/ ${extra.precio.toFixed(2)}</span>
     `;
 
     const checkbox = label.querySelector('.check-extra-servicio');
@@ -220,20 +171,15 @@ function abrirModalReserva(especialistaId) {
 
   actualizarCotizacion();
 
-  // Mostrar modal con animación
   DOM.modalReserva.classList.remove('hidden');
   DOM.modalReserva.classList.add('flex');
 }
 
-/**
- * Agrega o quita servicios adicionales al presupuesto
- */
 function manejarSeleccionExtra(extra, estaSeleccionado) {
   if (estaSeleccionado) {
     AppState.extrasSeleccionados.push(extra);
     UIManager.mostrarNotificacion(`Añadido: ${extra.nombre}`, 'exito');
   } else {
-    // filter() para remover el elemento del array
     AppState.extrasSeleccionados = AppState.extrasSeleccionados.filter(
       (item) => item.id !== extra.id
     );
@@ -241,10 +187,6 @@ function manejarSeleccionExtra(extra, estaSeleccionado) {
   actualizarCotizacion();
 }
 
-/**
- * 4. CÁLCULO DE TOTALES (COTIZADOR EN TIEMPO REAL)
- * Uso explícito de la función de orden superior reduce().
- */
 function actualizarCotizacion() {
   const { especialistaSeleccionado, extrasSeleccionados } = AppState;
 
@@ -252,7 +194,6 @@ function actualizarCotizacion() {
 
   const base = especialistaSeleccionado.tarifaBase;
 
-  // HOF: reduce() para sumar el importe acumulado de todos los servicios extra
   const totalExtras = extrasSeleccionados.reduce(
     (acumulador, servicio) => acumulador + servicio.precio,
     0
@@ -260,14 +201,11 @@ function actualizarCotizacion() {
 
   const totalFinal = base + totalExtras;
 
-  DOM.resumenSubtotal.textContent = `$${base.toLocaleString('es-AR')}`;
-  DOM.resumenExtras.textContent = `$${totalExtras.toLocaleString('es-AR')}`;
-  DOM.resumenTotal.textContent = `$${totalFinal.toLocaleString('es-AR')}`;
+  DOM.resumenSubtotal.textContent = `S/ ${base.toFixed(2)}`;
+  DOM.resumenExtras.textContent = `+S/ ${totalExtras.toFixed(2)}`;
+  DOM.resumenTotal.textContent = `S/ ${totalFinal.toFixed(2)}`;
 }
 
-/**
- * Cierre del modal de reserva y limpieza de formulario
- */
 function cerrarModalReserva() {
   DOM.modalReserva.classList.add('hidden');
   DOM.modalReserva.classList.remove('flex');
@@ -276,17 +214,12 @@ function cerrarModalReserva() {
   AppState.extrasSeleccionados = [];
 }
 
-/**
- * 5. CONFIRMACIÓN FINAL Y GUARDADO EN STORAGE
- * Circuito comercial completo de punta a punta.
- */
 async function procesarReserva(evento) {
   evento.preventDefault();
 
   const { especialistaSeleccionado, extrasSeleccionados } = AppState;
   if (!especialistaSeleccionado) return;
 
-  // Obtención y destructuring de los campos del formulario
   const nombreCompleto = document.getElementById('inputNombre').value.trim();
   const dni = document.getElementById('inputDni').value.trim();
   const email = document.getElementById('inputEmail').value.trim();
@@ -299,7 +232,6 @@ async function procesarReserva(evento) {
     return;
   }
 
-  // Confirmación mediante SweetAlert2
   const confirmacion = await UIManager.confirmarAccion(
     '¿Confirmar agendamiento?',
     `Se reservará una cita con ${especialistaSeleccionado.nombre} para el día ${fecha} a las ${horario} hs.`
@@ -307,11 +239,9 @@ async function procesarReserva(evento) {
 
   if (!confirmacion) return;
 
-  // Cálculo del monto total usando reduce()
   const sumaExtras = extrasSeleccionados.reduce((acc, curr) => acc + curr.precio, 0);
   const total = especialistaSeleccionado.tarifaBase + sumaExtras;
 
-  // Generación de código único de cita
   const codigoReserva = `CSL-${Math.floor(100000 + Math.random() * 900000)}`;
 
   const nuevaCita = {
@@ -333,7 +263,6 @@ async function procesarReserva(evento) {
     },
   };
 
-  // Persistir en localStorage usando StorageManager
   const guardadoExitoso = StorageManager.guardarTurno(nuevaCita);
 
   if (guardadoExitoso) {
@@ -346,13 +275,9 @@ async function procesarReserva(evento) {
   }
 }
 
-/**
- * Actualiza la bandeja de turnos agendados desde Storage
- */
 function refrescarBandejaTurnos() {
   const turnos = StorageManager.obtenerTurnos();
 
-  // Contador badge con operador ternario
   DOM.contadorTurnosBadge.textContent = turnos.length;
   DOM.contadorTurnosBadge.className =
     turnos.length > 0
@@ -366,9 +291,6 @@ function refrescarBandejaTurnos() {
   );
 }
 
-/**
- * Cancelación de un turno individual con confirmación de SweetAlert2
- */
 async function cancelarTurnoIndividual(turnoId) {
   const confirmado = await UIManager.confirmarAccion(
     '¿Cancelar esta cita?',
@@ -383,9 +305,6 @@ async function cancelarTurnoIndividual(turnoId) {
   }
 }
 
-/**
- * Vaciado completo de agenda en localStorage con SweetAlert2
- */
 async function vaciarTodaLaAgenda() {
   const turnosActuales = StorageManager.obtenerTurnos();
   if (turnosActuales.length === 0) {
@@ -406,41 +325,28 @@ async function vaciarTodaLaAgenda() {
   }
 }
 
-/**
- * 6. INICIALIZACIÓN Y EVENT LISTENERS
- */
 document.addEventListener('DOMContentLoaded', () => {
-  // Cargar catálogo vía Fetch
   cargarEspecialistas();
-
-  // Cargar citas guardadas previamente en localStorage
   refrescarBandejaTurnos();
 
-  // Filtro por especialidad
   DOM.selectEspecialidad.addEventListener('change', (e) => {
     AppState.filtroEspecialidad = e.target.value;
     aplicarFiltrosYRenderizar();
   });
 
-  // Búsqueda por texto en tiempo real
   DOM.inputBuscar.addEventListener('input', (e) => {
     AppState.terminoBusqueda = e.target.value.trim();
     aplicarFiltrosYRenderizar();
   });
 
-  // Modal eventos
   DOM.btnCerrarModal.addEventListener('click', cerrarModalReserva);
 
-  // Cerrar modal al clickear fuera del contenedor blanco
   DOM.modalReserva.addEventListener('click', (e) => {
     if (e.target === DOM.modalReserva) {
       cerrarModalReserva();
     }
   });
 
-  // Envío del formulario de reserva
   DOM.formReserva.addEventListener('submit', procesarReserva);
-
-  // Vaciar Storage completo
   DOM.btnVaciarAgenda.addEventListener('click', vaciarTodaLaAgenda);
 });
